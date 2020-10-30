@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,41 +15,67 @@ public class Controller {
     private  Solution[] solutions = new Solution[20];
     private int dimensions;
     private int nodesAmount;
-    private int size = 10;
+    private int iterations;
+    private int size;
     private int mutationProbability = 15;
 
     @FXML
-    private Button btn;
+    private Button startBtn;
     @FXML
     private ChoiceBox dimBox = new ChoiceBox();
     @FXML
     private ChoiceBox nodBox = new ChoiceBox();
+    @FXML
+    private ChoiceBox itBox = new ChoiceBox();
+    @FXML
+    private ChoiceBox sizeBox = new ChoiceBox();
+    @FXML
+    private ListView eventLog = new ListView();
 
     @FXML
     public void initialize() {
         dimBox.getItems().removeAll(dimBox.getItems());
         dimBox.getItems().addAll(FXCollections.observableArrayList(2,3,4,5,6,7,8,9));
+        dimBox.setValue(2);
         nodBox.getItems().removeAll(dimBox.getItems());
-        nodBox.getItems().addAll(FXCollections.observableArrayList(5,10,20,50,100));
+        nodBox.getItems().addAll(FXCollections.observableArrayList(20,50,100,500));
+        nodBox.setValue(20);
+        itBox.getItems().removeAll(itBox.getItems());
+        itBox.getItems().addAll(FXCollections.observableArrayList(100,500,1000,5000));
+        itBox.setValue(100);
+        sizeBox.getItems().removeAll(sizeBox.getItems());
+        sizeBox.getItems().addAll(FXCollections.observableArrayList(10,20,30,40,50));
+        sizeBox.setValue(10);
     }
 
     @FXML
-    public void onButtonPressed() {
+    public void onStartPressed() {
         ArrayList<Node> nodes = new ArrayList<>();
         dimensions = (int) dimBox.getValue();
         nodesAmount = (int) nodBox.getValue();
-
+        iterations = (int) itBox.getValue();
+        size = (int) sizeBox.getValue();
+        eventLog.getItems().add("Dimensions: " + dimensions);
+        eventLog.getItems().add("Nodes: " + nodesAmount);
+        eventLog.getItems().add("Iteration: " + iterations);
+        eventLog.getItems().add("Size: " + size);
         createNodes(nodes);
         generateSolutions(nodes);
         evaluateFitness();
-
-        for (int i=0; i<100; i++) {
+        for (int i=0; i<iterations;i++) {
             System.out.println("####################### ITERATION " + i + " #######################");
             recombine();
             evaluateFitness();
             mutate();
             printLength();
+            eventLog.getItems().add("Current Best: " + solutions[0].getLength());
+            eventLog.scrollTo(eventLog.getItems().size());
         }
+    }
+
+    @FXML
+    public void onClearPressed() {
+        eventLog.getItems().clear();
     }
 
     /**
@@ -98,8 +125,7 @@ public class Controller {
 
     private void recombine() {
         for (int i=5; i<solutions.length; i++) { //solutions 0 to 4 are elites
-            int pivot2 = (int) (1 + (Math.random() * solutions[i].getSequence().size() - 2));
-            int pivot =  (nodesAmount / 2) + (nodesAmount % 2) - 1; //middle of the solution array
+            int pivot = (int) (1 + (Math.random() * solutions[i].getSequence().size() - 2));
             int combine; //index of a solution used for combination with solutions[i]
 
             //combination with oneself should not be possible
@@ -108,7 +134,7 @@ public class Controller {
             } while (combine == i);
 
             //removes nodes in solutions[i] based on the sequence of nodes in solutions[j] and appends them to solution[i]
-            for (int j=pivot2; j<nodesAmount-1; j++) {
+            for (int j=solutions[i].getSequence().size()-1-pivot; j<nodesAmount-1; j++) {
                 solutions[i].getSequence().remove(solutions[combine].getSequence().get(j));
                 solutions[i].getSequence().add(solutions[combine].getSequence().get(j));
             }
@@ -204,6 +230,7 @@ public class Controller {
 
     /**
      * Prints the sequences for all current solutions.
+     * (Currently not used, but can be used for testing)
      */
     public void printSequence() {
         for (int i=0; i<solutions.length; i++) {
@@ -216,6 +243,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Only prints the length of all solutions
+     */
     public void printLength() {
         for (int i=0; i<solutions.length; i++) {
             System.out.println(solutions[i].getLength());
