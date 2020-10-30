@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Node {
 
-    private ArrayList coordinates = new ArrayList<Integer>();
+    private ArrayList<Float> coordinates = new ArrayList();
 
     public Node(ArrayList arrayList) {
         this.coordinates = arrayList;
@@ -12,5 +12,9 @@ public class Node {
 
     public ArrayList getCoordinates() {
         return coordinates;
+    }
+
+    public void setCoordinates(ArrayList<Float> coordinates) {
+        this.coordinates = coordinates;
     }
 }
