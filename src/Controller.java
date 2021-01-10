@@ -1,5 +1,3 @@
-package sample;
-
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -38,14 +36,14 @@ public class Controller {
         dimBox.getItems().addAll(FXCollections.observableArrayList(2,3,4,5,6,7,8,9));
         dimBox.setValue(2);
         nodBox.getItems().removeAll(dimBox.getItems());
-        nodBox.getItems().addAll(FXCollections.observableArrayList(20,50,100,500));
-        nodBox.setValue(20);
+        nodBox.getItems().addAll(FXCollections.observableArrayList(50,100,250,500));
+        nodBox.setValue(100);
         itBox.getItems().removeAll(itBox.getItems());
         itBox.getItems().addAll(FXCollections.observableArrayList(100,500,1000,5000));
-        itBox.setValue(100);
+        itBox.setValue(500);
         sizeBox.getItems().removeAll(sizeBox.getItems());
-        sizeBox.getItems().addAll(FXCollections.observableArrayList(10,20,30,40,50));
-        sizeBox.setValue(10);
+        sizeBox.getItems().addAll(FXCollections.observableArrayList(100,250,1000,2500));
+        sizeBox.setValue(250);
     }
 
     @FXML
