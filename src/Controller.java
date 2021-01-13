@@ -121,6 +121,10 @@ public class Controller {
         }
     }
 
+    /**
+     * Recombination works by selecting a sequence of nodes from another solution and removing all nodes from this
+     * sequence from the current solution and appending those nodes at the end of the solution.
+     */
     private void recombine() {
         for (int i=5; i<solutions.length; i++) { //solutions 0 to 4 are elites
             int pivot = (int) (1 + (Math.random() * solutions[i].getSequence().size() - 2));
@@ -139,6 +143,10 @@ public class Controller {
         }
     }
 
+    /**
+     * Every solution, which is not an elite can mutate based on the mutationProbability.
+     * Swap mutation is used.
+     */
     private void mutate() {
         for (int i=5; i<solutions.length; i++) { //solutions 0 to 4 are elites
             if ((int) (Math.random() * 100) < mutationProbability) {
